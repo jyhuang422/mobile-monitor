@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tw">
+<head>
+  <title>Mobile Web Monitor</title>
+  <meta charset="UTF-8">
+  <style>
+    h1 {
+      width: 100%;
+      background: #ff9c00;
+      font-size: 20px;
+      color: #FFF;
+      text-align: center;
+      padding: 10px;
+    }
+    h3 { 
+      width: 100%;
+      line-height: 40px;
+      padding: 0px 10px;
+      box-sizing: border-box;
+      background: #eee;
+    }
+    li {
+      list-style: none;
+    }
+    #filter-area, #display-area {
+      display: inline-block;
+    }
+    #filter-area {
+      max-width: 200px;
+      vertical-align: top;
+      position: fixed;
+    }
+    #filter-area ul {
+      margin: 0;
+      padding: 0;
+    }
+    #display-area {
+      max-width: 90%;
+      min-width: 85%;
+      float: right;
+    }
+    #display-area li { margin: 0 5px; }
+    ::-webkit-scrollbar {
+      width: 0px;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+</div>
+<script>
+
+window.env = [
+{
+  id: 'rtg',
+  isShow: true
+}
+]
+
+window.rtConfig = function(env) {
+  switch(env) {
+    case "rtg":
+      return {
+        host: 'https://m.ruten.com.tw',
+        g_no: 21212044362401,
+        t_no: 16021434441342,
+        secret_id: 4687408
+      }
+  }
+}
+
+let pageData = [
+  {
+    id: 'home',
+    type: 'page',
+    page_name: 'home',
+    page_url: '/',
+    isShow: false
+  },
+  {
+    id: 'goods_page',
+    type: 'page',
+    page_name: 'goods_page',
+    page_url: '/goods/show.php?g=',
+    url_param: 'g_no',
+    group: ['goods'],
+    isShow: false
+  },
+  {
+    id: 'buy_page',
+    type: 'page',
+    page_name: 'buy_page',
+    page_url: '/buy.php?g=',
+    url_param: 'g_no',
+    group: ['goods'],
+    isShow: false
+  },
+  {
+    id: 'category',
+    type: 'page',
+    page_name: 'category',
+    page_url: '/class/category.php?c=0011',
+    group: ['class'],
+    isShow: false
+  },
+  {
+    id: 'adult_only',
+    type: 'page',
+    page_name: 'adult_only',
+    page_url: '/class/adult_only.php',
+    group: ['class', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'goods_list',
+    type: 'page',
+    page_name: 'goods_list',
+    page_url: '/search/search.php?c=00110002',
+    group: ['list'],
+    isShow: false
+  },
+  {
+    id: 'store_list',
+    type: 'page',
+    page_name: 'store_list',
+    page_url: '/class/store_list.php?s=heremountain',
+    group: ['list'],
+    isShow: false
+  },
+  {
+    id: 'history',
+    type: 'page',
+    page_name: 'history',
+    page_url: '/mybid/history.php',
+    group: ['list'],
+    isShow: false
+  },
+  {
+    id: 'buy_list',
+    type: 'page',
+    page_name: 'Buy List',
+    page_url: '/mybid/buy_list.php',
+    group: ['mybid','list'],
+    isShow: false
+  },
+  {
+    id: 'buy_list_detail',
+    type: 'page',
+    page_name: 'Buy List Detail',
+    page_url: '/mybid/buy_list_detail.php?tno=',
+    url_param: 't_no',
+    group: ['mybid'],
+    isShow: false
+  },
+  {
+    id: 'goods_qa',
+    type: 'page',
+    page_name: 'Goods QA',
+    page_url: '/goods/qa.php?g=',
+    url_param: 'g_no',
+    group: ['goods'],
+    isShow: false
+  },
+  {
+    id: 'my_account',
+    type: 'page',
+    page_name: 'My Account',
+    page_url: '/mybid/my_account.php',
+    group: ['mybid'],
+    isShow: false
+  },
+  {
+    id: 'track_list',
+    type: 'page',
+    page_name: 'Track List',
+    page_url: '/mybid/focus.php',
+    group: ['mybid'],
+    isShow: false
+  },
+  {
+    id: 'secret_list',
+    type: 'page',
+    page_name: 'Secret List',
+    page_url: '/mybid/secret_list.php',
+    group: ['mybid', 'list', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'secret_detail',
+    type: 'page',
+    page_name: 'Secret Detail',
+    page_url: '/mybid/secret_detail.php?secret_type=receive&sec_uid=',
+    url_param: 'secret_id',
+    group: ['mybid', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'secret_reply',
+    type: 'page',
+    page_name: 'Secret Reply',
+    page_url: '/mybid/secret_reply.php?sec_uid=',
+    url_param: 'secret_id',
+    group: ['mybid', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'credit',
+    type: 'page',
+    page_name: 'User Credit',
+    page_url: '/class/credit.php?uid=ac02',
+    group: ['class', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'seller_management',
+    type: 'page',
+    page_name: 'Seller Management',
+    page_url: '/mybid/seller_management.php',
+    group: ['mybid', 'seller'],
+    isShow: false
+  },
+  {
+    id: 'seller_full',
+    type: 'page',
+    page_name: 'Seller order list',
+    page_url: '/mybid/list/seller_full.php',
+    group: ['mybid', 'seller', 'list'],
+    isShow: false
+  },
+  {
+    id: 'info_center',
+    type: 'page',
+    page_name: 'Info Center',
+    page_url: '/mybid/msg/info_center.php',
+    group: ['mybid'],
+    isShow: false
+  },
+  {
+    id: 'info_center_detail',
+    type: 'page',
+    page_name: 'Info Center Detail',
+    page_url: '/mybid/msg/list.php?type=auction_won',
+    group: ['mybid'],
+    isShow: false
+  },
+  {
+    id: 'goods_detail',
+    type: 'page',
+    page_name: 'Info Center Detail',
+    page_url: '/goods/detail.php?g=',
+    url_param: 'g_no',
+    group: ['goods', 'non_template'],
+    isShow: false
+  },
+  {
+    id: 'about_me',
+    type: 'page',
+    page_name: 'About Me',
+    page_url: '/class/aboutme.php?uid=ac02',
+    group: ['class'],
+    isShow: false
+  }
+];
+
+let group = [
+  {
+    id: 'all',
+    type: 'group',
+    group_name: 'All',
+    isShow: false
+  }
+];
+
+let data = [...group, ...pageData];
+window.context = data;
+</script>
+<script type="text/javascript" src="./dist/bundle.js"></script>
+</body>
+</html>

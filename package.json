@@ -1,0 +1,26 @@
+{
+  "name": "mobile-monitor",
+  "version": "1.0.0",
+  "description": "mobile monitor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jyhuang422/mobile-monitor.git"
+  },
+  "author": "jyhuang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jyhuang422/mobile-monitor/issues"
+  },
+  "homepage": "https://github.com/jyhuang422/mobile-monitor#readme",
+  "devDependencies": {
+    "babel-polyfill": "^6.9.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2"
+  }
+}
